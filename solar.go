@@ -19,24 +19,89 @@ var solarTermsTraditional = []string{
 	"冬至", "小寒", "大寒", "立春", "雨水", "驚蟄",
 }
 
-// EclipticLongitude 黄道经度
-type EclipticLongitude float64
+// SolarTerm 24节气类型
+type SolarTerm int
 
-// SolarTerm 根据黄道经度得到对应节气
-func (l EclipticLongitude) SolarTerm(traditional ...bool) string {
+func (st SolarTerm) String(traditional ...bool) string {
 	t := false
 	if len(traditional) > 0 {
 		t = traditional[0]
 	}
 
+	if int(st) >= len(solarTerms) || int(st) < 0 {
+		return ""
+	}
+
+	if t {
+		return solarTermsTraditional[int(st)]
+	}
+	return solarTerms[int(st)]
+}
+
+// EclipticLongitude 黄道经度
+type EclipticLongitude float64
+
+// SolarTerm 根据黄道经度得到对应节气
+func (l EclipticLongitude) SolarTerm() SolarTerm {
 	longitude := float64(l)
 	if longitude >= 360 || longitude < 0 {
 		longitude -= math.Floor(longitude/360) * 360
 	}
-
 	idx := int(math.Floor(longitude / 15))
-	if t {
-		return solarTermsTraditional[idx]
-	}
-	return solarTerms[idx]
+	return SolarTerm(idx)
+}
+
+// SolarTerms 24节气列表
+// 英文命名参照
+// see: http://www.cma.gov.cn/2011xzt/essjqzt/jqhz/jqhz02/201312/t20131213_233952.html
+var SolarTerms = struct {
+	TheSpringEquinox      SolarTerm // 春分
+	PureBrightness        SolarTerm // 清明
+	GrainRain             SolarTerm // 谷雨
+	TheBeginningOfSummer  SolarTerm // 立夏
+	LesserFullnessOfGrain SolarTerm // 小满
+	GrainInBeard          SolarTerm // 芒种
+	TheSummerSolstice     SolarTerm // 夏至
+	LesserHeat            SolarTerm // 小暑
+	GreaterHeat           SolarTerm // 大暑
+	TheBeginningOfAutumn  SolarTerm // 立秋
+	TheEndOfHeat          SolarTerm // 处暑
+	WhiteDew              SolarTerm // 白露
+	TheAutumnEquinox      SolarTerm // 秋分
+	ColdDew               SolarTerm // 寒露
+	FrostsDescent         SolarTerm // 霜降
+	TheBeginningOfWinter  SolarTerm // 立冬
+	LesserSnow            SolarTerm // 小雪
+	GreaterSnow           SolarTerm // 大雪
+	TheWinterSolstice     SolarTerm // 冬至
+	LesserCold            SolarTerm // 小寒
+	GreaterCold           SolarTerm // 大寒
+	TheBeginningOfSpring  SolarTerm // 立春
+	RainWater             SolarTerm // 雨水
+	TheWakingOfInsects    SolarTerm // 惊蛰
+}{
+	TheSpringEquinox:      0,
+	PureBrightness:        1,
+	GrainRain:             2,
+	TheBeginningOfSummer:  3,
+	LesserFullnessOfGrain: 4,
+	GrainInBeard:          5,
+	TheSummerSolstice:     6,
+	LesserHeat:            7,
+	GreaterHeat:           8,
+	TheBeginningOfAutumn:  9,
+	TheEndOfHeat:          10,
+	WhiteDew:              11,
+	TheAutumnEquinox:      12,
+	ColdDew:               13,
+	FrostsDescent:         14,
+	TheBeginningOfWinter:  15,
+	LesserSnow:            16,
+	GreaterSnow:           17,
+	TheWinterSolstice:     18,
+	LesserCold:            19,
+	GreaterCold:           20,
+	TheBeginningOfSpring:  21,
+	RainWater:             22,
+	TheWakingOfInsects:    23,
 }
