@@ -10,260 +10,87 @@ func init() {
 	sexagenaryDayBase = time.Date(1949, 10, 1, 0, 0, 0, 0, baseTimezone)
 }
 
-// celestialStem 天干中文列表
-var celestialStemWords = [10]string{"甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"}
-var celestialStemWordMap = map[string]CelestialStem{
-	"甲": CelestialStemEnum.Jia,
-	"乙": CelestialStemEnum.Yi,
-	"丙": CelestialStemEnum.Bing,
-	"丁": CelestialStemEnum.Ding,
-	"戊": CelestialStemEnum.Wu,
-	"己": CelestialStemEnum.Jia,
-	"庚": CelestialStemEnum.Geng,
-	"辛": CelestialStemEnum.Xin,
-	"壬": CelestialStemEnum.Ren,
-	"癸": CelestialStemEnum.Gui,
+// SexagenaryTerm 干支
+type SexagenaryTerm struct {
+	CelestialStem
+	TerrestrialBranch
 }
 
-// CelestialStemEnum 天干枚举项
-var CelestialStemEnum = struct {
-	Jia  CelestialStem
-	Yi   CelestialStem
-	Bing CelestialStem
-	Ding CelestialStem
-	Wu   CelestialStem
-	Ji   CelestialStem
-	Geng CelestialStem
-	Xin  CelestialStem
-	Ren  CelestialStem
-	Gui  CelestialStem
-}{
-	Jia:  0,
-	Yi:   1,
-	Bing: 2,
-	Ding: 3,
-	Wu:   4,
-	Ji:   5,
-	Geng: 6,
-	Xin:  7,
-	Ren:  8,
-	Gui:  9,
+// NewSexagenaryTermFromIndex 通过索引值创建干支
+// 索引范围0-59, 分别表示 0:甲子, 1:乙丑, ... 59:癸亥
+// 大于59,或小于0会按照模算数,转换到0-59,取对应干支
+func NewSexagenaryTermFromIndex(idx int) SexagenaryTerm {
+	if idx < 0 {
+		idx = idx%60 + 60
+	}
+	return SexagenaryEnum.JiaZi.Add(idx)
 }
 
-// CelestialStem 天干
-type CelestialStem int
-
-// NewCelestialStemFromWord 从天干中文还原成CelestialStem类型
-// 例: cs := NewCelestialStemFromWord("甲")
-//	   assert(cs == CelestialStemEnum.Jia)
-func NewCelestialStemFromWord(word string) (CelestialStem, bool) {
-	cs, valid := celestialStemWordMap[word]
-	return cs, valid
+// NewSexagenaryTermFromWord 通过干支中文返回该类型值
+func NewSexagenaryTermFromWord(word string) (SexagenaryTerm, bool) {
+	ct := strings.Split(word, "")
+	if len(ct) != 2 {
+		return SexagenaryEnum.JiaZi, false
+	}
+	c, cValid := NewCelestialStemFromWord(ct[0])
+	t, tValid := NewTerrestrialBranchFromWord(ct[1])
+	if !cValid || !tValid {
+		return SexagenaryEnum.JiaZi, false
+	}
+	return SexagenaryTerm{
+		CelestialStem:     c,
+		TerrestrialBranch: t,
+	}, true
 }
 
-// Next 获得该天干的下一项
-// 例:   x=甲, x.Next() -> 乙
-//		 x=乙, x.Next() -> 丙
-// 		 ...
-//       x=癸, x.Next() -> 甲
-func (cs CelestialStem) Next() CelestialStem {
-	return cs.Add(1)
+// Next 获得该干支的下一项
+// 例: x=甲子, x.Next() -> 乙丑
+//     x=乙丑, x.Next() -> 丙寅
+//	   ...
+//     x=癸亥, x.Next() -> 甲子
+func (s SexagenaryTerm) Next() SexagenaryTerm {
+	return SexagenaryTerm{
+		CelestialStem:     s.CelestialStem.Next(),
+		TerrestrialBranch: s.TerrestrialBranch.Next(),
+	}
 }
 
-// Prev 获得该天干的上一项, Next的逆操作
-func (cs CelestialStem) Prev() CelestialStem {
-	return cs.Add(1)
+// Prev 获得该干支的上一项, Next的逆向操作
+func (s SexagenaryTerm) Prev() SexagenaryTerm {
+	return SexagenaryTerm{
+		CelestialStem:     s.CelestialStem.Prev(),
+		TerrestrialBranch: s.TerrestrialBranch.Prev(),
+	}
 }
 
-// Add 获得该天干向前/后的任意项, Next和Prev的推广
+// Add 获得该干支之前/后的任一项, Next和Prev的推广
 // n < 0 向前回朔, n > 0 向后推算
-func (cs CelestialStem) Add(n int) CelestialStem {
-	ncs := int(cs) + n
-	if ncs < 0 {
-		ncs = ncs%10 + 10
+func (s SexagenaryTerm) Add(n int) SexagenaryTerm {
+	return SexagenaryTerm{
+		CelestialStem:     s.CelestialStem.Add(n),
+		TerrestrialBranch: s.TerrestrialBranch.Add(n),
 	}
-	ncs = ncs % 10
-	return CelestialStem(ncs)
 }
 
-// String 返回天干中文
-func (cs CelestialStem) String() string {
-	if cs >= 10 || cs < 0 {
-		return ""
-	}
-	return celestialStemWords[cs]
-}
-
-// terrestrialBranch 地支中文列表
-var terrestrialBranchWords = [12]string{"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"}
-var terrestrialBranchWordMap = map[string]TerrestrialBranch{
-	"子": TerrestrialBranchEnum.Zi,
-	"丑": TerrestrialBranchEnum.Chou,
-	"寅": TerrestrialBranchEnum.Yin,
-	"卯": TerrestrialBranchEnum.Mao,
-	"辰": TerrestrialBranchEnum.Chen,
-	"巳": TerrestrialBranchEnum.Si,
-	"午": TerrestrialBranchEnum.Wu,
-	"未": TerrestrialBranchEnum.Wei,
-	"申": TerrestrialBranchEnum.Shen,
-	"酉": TerrestrialBranchEnum.You,
-	"戌": TerrestrialBranchEnum.Xu,
-	"亥": TerrestrialBranchEnum.Hai,
-}
-
-// TerrestrialBranchEnum 地支枚举项
-var TerrestrialBranchEnum = struct {
-	Zi   TerrestrialBranch
-	Chou TerrestrialBranch
-	Yin  TerrestrialBranch
-	Mao  TerrestrialBranch
-	Chen TerrestrialBranch
-	Si   TerrestrialBranch
-	Wu   TerrestrialBranch
-	Wei  TerrestrialBranch
-	Shen TerrestrialBranch
-	You  TerrestrialBranch
-	Xu   TerrestrialBranch
-	Hai  TerrestrialBranch
-}{
-	Zi:   0,
-	Chou: 1,
-	Yin:  2,
-	Mao:  3,
-	Chen: 4,
-	Si:   5,
-	Wu:   6,
-	Wei:  7,
-	Shen: 8,
-	You:  9,
-	Xu:   10,
-	Hai:  11,
-}
-
-// TerrestrialBranch 地支
-type TerrestrialBranch int
-
-// NewTerrestrialBranchFromTime 根据时间返回地支类型
-func NewTerrestrialBranchFromTime(t time.Time) TerrestrialBranch {
-	h := t.Hour()
-	if h == 23 {
-		h = 0
-	}
-	if h%2 == 1 {
-		h += 1
-	}
-	return TerrestrialBranch(h / 2)
-}
-
-// NewTerrestrialBranchFromWord 从地支中文返回其类型
-func NewTerrestrialBranchFromWord(word string) (TerrestrialBranch, bool) {
-	cs, valid := terrestrialBranchWordMap[word]
-	return cs, valid
-}
-
-// Next 获得该地支的下一项
-// 例:   x=子, x.Next() -> 丑
-//		 x=丑, x.Next() -> 寅
-// 		 ...
-//       x=亥, x.Next() -> 子
-func (tb TerrestrialBranch) Next() TerrestrialBranch {
-	return tb.Add(1)
-}
-
-// Prev 获得该地支的上一项, Next的逆操作
-func (tb TerrestrialBranch) Prev() TerrestrialBranch {
-	return tb.Add(-1)
-}
-
-// Add 获得该地支之前/后的任意项, Next和Prev的推广
-// n < 0 向前回朔, n > 0 向后推算
-func (tb TerrestrialBranch) Add(n int) TerrestrialBranch {
-	ntb := int(tb) + n
-	if ntb < 0 {
-		ntb = ntb%10 + 10
-	}
-	ntb = ntb % 12
-	return TerrestrialBranch(ntb)
-}
-
-// Month 返回对应的地支纪月
-func (tb TerrestrialBranch) Month() int {
-	if tb > 11 || tb < 0 {
+// Index 返回该干支的索引值(0-59)
+func (s SexagenaryTerm) Index() int {
+	if s.CelestialStem >= 10 || s.CelestialStem < 0 || s.TerrestrialBranch >= 12 || s.TerrestrialBranch < 0 {
 		return 0
 	}
-	if tb == TerrestrialBranchEnum.Zi {
-		return 11
-	} else if tb == TerrestrialBranchEnum.Chou {
-		return 12
-	}
-	return int(tb - 1)
+	c := int(s.CelestialStem)
+	t := int(s.TerrestrialBranch)
+
+	return (((c+12)-t)%12)/2*10 + c
 }
 
-// String 返回地支中文
-func (tb TerrestrialBranch) String() string {
-	if tb >= 12 || tb < 0 {
+// String 返回干支中文
+func (s SexagenaryTerm) String() string {
+	c := s.CelestialStem.String()
+	t := s.TerrestrialBranch.String()
+	if c == "" || t == "" {
 		return ""
 	}
-	return terrestrialBranchWords[tb]
-}
-
-// ZodiacSign 返回对应的生肖
-func (tb TerrestrialBranch) ZodiacSign() ZodiacSign {
-	return ZodiacSign(tb)
-}
-
-// zodiac 生肖简体
-var zodiacSignWords = [12]string{"鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "狗", "猪"}
-
-// zodiaz 生肖繁体
-var zodiacSignWordsTraditional = [12]string{"鼠", "牛", "虎", "兔", "龍", "蛇", "馬", "羊", "猴", "雞", "狗", "豬"}
-
-// ZodiacEnum 生肖枚举项
-var ZodiacEnum = struct {
-	Rat     ZodiacSign
-	Ox      ZodiacSign
-	Tiger   ZodiacSign
-	Rabbit  ZodiacSign
-	Dragoon ZodiacSign
-	Snake   ZodiacSign
-	Horse   ZodiacSign
-	Goat    ZodiacSign
-	Monkey  ZodiacSign
-	Rooster ZodiacSign
-	Dog     ZodiacSign
-	Pig     ZodiacSign
-}{
-	Rat:     0,
-	Ox:      1,
-	Tiger:   2,
-	Rabbit:  3,
-	Dragoon: 4,
-	Snake:   5,
-	Horse:   6,
-	Goat:    7,
-	Monkey:  8,
-	Rooster: 9,
-	Dog:     10,
-	Pig:     11,
-}
-
-// ZodiacSign 生肖
-type ZodiacSign int
-
-// TerrestrialBranch 返回对应的地支
-func (zs ZodiacSign) TerrestrialBranch() TerrestrialBranch {
-	return TerrestrialBranch(zs)
-}
-
-func (zs ZodiacSign) String(simplified bool) string {
-	if zs >= 12 || zs < 0 {
-		return ""
-	}
-
-	if simplified {
-		return zodiacSignWords[zs]
-	}
-	return zodiacSignWordsTraditional[zs]
+	return c + t
 }
 
 // SexagenaryEnum 60干支枚举项
@@ -407,111 +234,4 @@ var SexagenaryEnum = struct {
 	GuiMao:  SexagenaryTerm{CelestialStemEnum.Gui, TerrestrialBranchEnum.Mao},  // 癸卯
 	GuiChou: SexagenaryTerm{CelestialStemEnum.Gui, TerrestrialBranchEnum.Chou}, // 癸丑
 	GuiHai:  SexagenaryTerm{CelestialStemEnum.Gui, TerrestrialBranchEnum.Hai},  // 癸亥
-}
-
-// SexagenaryTerm 干支项
-type SexagenaryTerm struct {
-	CelestialStem
-	TerrestrialBranch
-}
-
-// NewSexagenaryTermFromIndex 通过索引值创建干支
-// 索引范围0-59, 分别表示 0:甲子, 1:乙丑, ... 59:癸亥
-// 大于59,或小于0会按照模算数,转换到0-59,取对应干支
-func NewSexagenaryTermFromIndex(idx int) SexagenaryTerm {
-	if idx < 0 {
-		idx = idx%60 + 60
-	}
-	return SexagenaryEnum.JiaZi.Add(idx)
-}
-
-// NewSexagenaryTermFromWord 通过干支中文返回该类型值
-func NewSexagenaryTermFromWord(word string) (SexagenaryTerm, bool) {
-	ct := strings.Split(word, "")
-	if len(ct) != 2 {
-		return SexagenaryEnum.JiaZi, false
-	}
-	c, cValid := NewCelestialStemFromWord(ct[0])
-	t, tValid := NewTerrestrialBranchFromWord(ct[1])
-	if !cValid || !tValid {
-		return SexagenaryEnum.JiaZi, false
-	}
-	return SexagenaryTerm{
-		CelestialStem:     c,
-		TerrestrialBranch: t,
-	}, true
-}
-
-// Next 获得该干支的下一项
-// 例: x=甲子, x.Next() -> 乙丑
-//     x=乙丑, x.Next() -> 丙寅
-//	   ...
-//     x=癸亥, x.Next() -> 甲子
-func (s SexagenaryTerm) Next() SexagenaryTerm {
-	return SexagenaryTerm{
-		CelestialStem:     s.CelestialStem.Next(),
-		TerrestrialBranch: s.TerrestrialBranch.Next(),
-	}
-}
-
-// Prev 获得该干支的上一项, Next的逆向操作
-func (s SexagenaryTerm) Prev() SexagenaryTerm {
-	return SexagenaryTerm{
-		CelestialStem:     s.CelestialStem.Prev(),
-		TerrestrialBranch: s.TerrestrialBranch.Prev(),
-	}
-}
-
-// Add 获得该干支之前/后的任一项, Next和Prev的推广
-// n < 0 向前回朔, n > 0 向后推算
-func (s SexagenaryTerm) Add(n int) SexagenaryTerm {
-	return SexagenaryTerm{
-		CelestialStem:     s.CelestialStem.Add(n),
-		TerrestrialBranch: s.TerrestrialBranch.Add(n),
-	}
-}
-
-func (s SexagenaryTerm) Index() int {
-	if s.CelestialStem >= 10 || s.CelestialStem < 0 || s.TerrestrialBranch >= 12 || s.TerrestrialBranch < 0 {
-		return 0
-	}
-	c := int(s.CelestialStem)
-	t := int(s.TerrestrialBranch)
-
-	return (((c+12)-t)%12)/2*10 + c
-}
-
-// String 返回干支中文
-func (s SexagenaryTerm) String() string {
-	c := s.CelestialStem.String()
-	t := s.TerrestrialBranch.String()
-	if c == "" || t == "" {
-		return ""
-	}
-	return c + t
-}
-
-// SexagenaryNumber 根据给定的干支索引计算指定跨度的干支纪数
-// 用于计算干支纪时,日,月,年
-// span 指定跨越的数
-// startIdx 代表干支纪数序号, 0-59, 0代表甲子, 1代表乙丑, 以此类推
-//		不传默认为0
-// 例:
-//		SexagenaryNumber(2) 返回"丙寅", 即按照"甲子"往后移2: "甲子" -> "乙丑" -> "丙寅"
-//		SexagenaryNumber(-3, 1) 返回"壬戌", 即按照"乙丑往前移3: "乙丑" -> "甲子" -> "癸亥" -> "壬戌"
-// 因为60干支周的计算实际上是模算数,所以参数中任何小于0或大于59的数都会换算成模60的数再计算干支纪日
-func SexagenaryNumber(span int, startIdx ...int) string {
-	sIdx := 0
-	if len(startIdx) > 0 {
-		sIdx = startIdx[0]
-	}
-
-	span += sIdx
-	if span < 0 {
-		span = span%60 + 60
-	}
-	span = span % 60
-
-	return ""
-	//return sexagenaryWords[span]
 }
