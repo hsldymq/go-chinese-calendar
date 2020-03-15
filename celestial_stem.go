@@ -8,7 +8,7 @@ var celestialStemWordMap = map[string]CelestialStem{
 	"丙": CelestialStemEnum.Bing,
 	"丁": CelestialStemEnum.Ding,
 	"戊": CelestialStemEnum.Wu,
-	"己": CelestialStemEnum.Jia,
+	"己": CelestialStemEnum.Ji,
 	"庚": CelestialStemEnum.Geng,
 	"辛": CelestialStemEnum.Xin,
 	"壬": CelestialStemEnum.Ren,
@@ -37,7 +37,7 @@ func (cs CelestialStem) Next() CelestialStem {
 
 // Prev 获得该天干的上一项, Next的逆操作
 func (cs CelestialStem) Prev() CelestialStem {
-	return cs.Add(1)
+	return cs.Add(-1)
 }
 
 // Add 获得该天干向前/后的任意项, Next和Prev的推广
