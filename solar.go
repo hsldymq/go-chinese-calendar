@@ -22,20 +22,15 @@ var solarTermsTraditional = []string{
 // SolarTerm 24节气类型
 type SolarTerm int
 
-func (st SolarTerm) String(traditional ...bool) string {
-	t := false
-	if len(traditional) > 0 {
-		t = traditional[0]
-	}
-
+func (st SolarTerm) String(simplified bool) string {
 	if int(st) >= len(solarTerms) || int(st) < 0 {
 		return ""
 	}
 
-	if t {
-		return solarTermsTraditional[int(st)]
+	if simplified {
+		return solarTerms[int(st)]
 	}
-	return solarTerms[int(st)]
+	return solarTermsTraditional[int(st)]
 }
 
 // EclipticLongitude 黄道经度
@@ -51,10 +46,9 @@ func (l EclipticLongitude) SolarTerm() SolarTerm {
 	return SolarTerm(idx)
 }
 
-// SolarTerms 24节气列表
-// 英文命名参照
-// see: http://www.cma.gov.cn/2011xzt/essjqzt/jqhz/jqhz02/201312/t20131213_233952.html
-var SolarTerms = struct {
+// SolarTermEnum 24节气枚举
+// 英文命名参照: http://www.cma.gov.cn/2011xzt/essjqzt/jqhz/jqhz02/201312/t20131213_233952.html
+var SolarTermEnum = struct {
 	TheSpringEquinox      SolarTerm // 春分
 	PureBrightness        SolarTerm // 清明
 	GrainRain             SolarTerm // 谷雨
