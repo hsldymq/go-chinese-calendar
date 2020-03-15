@@ -23,19 +23,19 @@ func NewSexagenaryTermFromIndex(idx int) SexagenaryTerm {
 	if idx < 0 {
 		idx = idx%60 + 60
 	}
-	return SexagenaryEnum.JiaZi.Add(idx)
+	return SexagenaryTermEnum.JiaZi.Add(idx)
 }
 
 // NewSexagenaryTermFromWord 通过干支中文返回该类型值
 func NewSexagenaryTermFromWord(word string) (SexagenaryTerm, bool) {
 	ct := strings.Split(word, "")
 	if len(ct) != 2 {
-		return SexagenaryEnum.JiaZi, false
+		return SexagenaryTermEnum.JiaZi, false
 	}
 	c, cValid := NewCelestialStemFromWord(ct[0])
 	t, tValid := NewTerrestrialBranchFromWord(ct[1])
 	if !cValid || !tValid {
-		return SexagenaryEnum.JiaZi, false
+		return SexagenaryTermEnum.JiaZi, false
 	}
 	return SexagenaryTerm{
 		CelestialStem:     c,
@@ -93,8 +93,8 @@ func (s SexagenaryTerm) String() string {
 	return c + t
 }
 
-// SexagenaryEnum 60干支枚举项
-var SexagenaryEnum = struct {
+// SexagenaryTermEnum 60干支枚举项
+var SexagenaryTermEnum = struct {
 	JiaZi   SexagenaryTerm // 甲子
 	JiaXu   SexagenaryTerm // 甲戌
 	JiaShen SexagenaryTerm // 甲申
