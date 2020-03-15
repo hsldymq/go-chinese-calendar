@@ -2,13 +2,7 @@ package chinese_calendar
 
 import (
 	"strings"
-	"time"
 )
-
-func init() {
-	// 以1949年10月1日作为基准日, 这一天是甲子日
-	sexagenaryDayBase = time.Date(1949, 10, 1, 0, 0, 0, 0, baseTimezone)
-}
 
 // SexagenaryTerm 干支
 type SexagenaryTerm struct {
