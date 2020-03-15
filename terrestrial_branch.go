@@ -59,7 +59,7 @@ func (tb TerrestrialBranch) Prev() TerrestrialBranch {
 func (tb TerrestrialBranch) Add(n int) TerrestrialBranch {
 	ntb := int(tb) + n
 	if ntb < 0 {
-		ntb = ntb%10 + 10
+		ntb = ntb%12 + 12
 	}
 	ntb = ntb % 12
 	return TerrestrialBranch(ntb)
@@ -145,8 +145,8 @@ func (zs ZodiacSign) String(simplified bool) string {
 	return zodiacSignWordsTraditional[zs]
 }
 
-// ZodiacEnum 生肖枚举项
-var ZodiacEnum = struct {
+// ZodiacSignEnum 生肖枚举项
+var ZodiacSignEnum = struct {
 	Rat     ZodiacSign
 	Ox      ZodiacSign
 	Tiger   ZodiacSign
