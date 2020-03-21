@@ -11,8 +11,6 @@ const (
 	ThirdPentad = 2
 )
 
-var pentadWords = []string{"初候", "次候", "末候"}
-
 // Pentad 候
 // 一个节气分三候: 初候,伺候,末候
 // 三候将一个节气均匀分为各5天, 个别候为6天
@@ -22,41 +20,40 @@ func (p Pentad) String() string {
 	if p >= 3 || p < 0 {
 		return ""
 	}
-	return pentadWords[p]
+	return [3]string{"初候", "次候", "末候"}[p]
 }
 
-// solarTerms 24节气
-// 通常春分的黄经定义为0°, 所以我们以春分作为开始
-var solarTerms = []string{
+// solarTerms 24节气中文简体
+var solarTerms = [24]string{
 	"春分", "清明", "谷雨", "立夏", "小满", "芒种",
 	"夏至", "小暑", "大暑", "立秋", "处暑", "白露",
 	"秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
 	"冬至", "小寒", "大寒", "立春", "雨水", "惊蛰",
 }
 
-// solarTermsTraditional 24节气繁体
-var solarTermsTraditional = []string{
+// solarTermsTraditional 24节气中文繁体
+var solarTermsTraditional = [24]string{
 	"春分", "清明", "穀雨", "立夏", "小滿", "芒種",
 	"夏至", "小暑", "大暑", "立秋", "處暑", "白露",
 	"秋分", "寒露", "霜降", "立冬", "小雪", "大雪",
 	"冬至", "小寒", "大寒", "立春", "雨水", "驚蟄",
 }
 
-// SolarTerm 24节气类型
+// SolarTerm 24节气
 type SolarTerm int
 
 func (st SolarTerm) String(simplified bool) string {
-	if int(st) >= len(solarTerms) || int(st) < 0 {
+	if int(st) >= 24 || int(st) < 0 {
 		return ""
 	}
 
 	if simplified {
-		return solarTerms[int(st)]
+		return solarTerms[st]
 	}
-	return solarTermsTraditional[int(st)]
+	return solarTermsTraditional[st]
 }
 
-// EclipticLongitude 黄道经度
+// EclipticLongitude 黄道经度, 通常春分的黄经定义为0°
 type EclipticLongitude float64
 
 // SolarTerm 根据黄道经度得到对应节气
