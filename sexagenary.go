@@ -1,8 +1,31 @@
-package chinese_calendar
+package calendar
 
 import (
 	"strings"
+	"time"
 )
+
+type SexagenaryTime time.Time
+
+func (t SexagenaryTime) Year() SexagenaryTerm {
+	// TODO
+	return SexagenaryTermEnum.JiaZi
+}
+
+func (t SexagenaryTime) Month() SexagenaryTerm {
+	// TODO
+	return SexagenaryTermEnum.JiaZi
+}
+
+func (t SexagenaryTime) Day() SexagenaryTerm {
+	// TODO
+	return SexagenaryTermEnum.JiaZi
+}
+
+func (t SexagenaryTime) Hour() SexagenaryTerm {
+	// TODO
+	return SexagenaryTermEnum.JiaZi
+}
 
 // SexagenaryTerm 干支
 type SexagenaryTerm struct {

@@ -1,4 +1,4 @@
-package chinese_calendar
+package calendar
 
 import (
 	"time"

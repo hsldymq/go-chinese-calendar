@@ -1,6 +1,27 @@
-package chinese_calendar
+package solar
 
 import "math"
+
+const (
+	// 初候
+	FirstPentad = 0
+	// 次候
+	SecondPentad = 1
+	// 末候
+	ThirdPentad = 2
+)
+
+var pentadWords = []string{"初候", "次候", "末候"}
+
+// Pentad 候, 1
+type Pentad int
+
+func (p Pentad) String() string {
+	if p >= 3 || p < 0 {
+		return ""
+	}
+	return pentadWords[p]
+}
 
 // solarTerms 24节气
 // 通常春分的黄经定义为0°, 所以我们以春分作为开始
