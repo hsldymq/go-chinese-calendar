@@ -13,7 +13,9 @@ const (
 
 var pentadWords = []string{"初候", "次候", "末候"}
 
-// Pentad 候, 1
+// Pentad 候
+// 一个节气分三候: 初候,伺候,末候
+// 三候将一个节气均匀分为各5天, 个别候为6天
 type Pentad int
 
 func (p Pentad) String() string {
