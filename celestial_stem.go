@@ -18,10 +18,10 @@ var celestialStemWordMap = map[string]CelestialStem{
 // CelestialStem 天干
 type CelestialStem int
 
-// NewCelestialStemFromWord 从天干中文还原成CelestialStem类型
-// 例: cs := NewCelestialStemFromWord("甲")
+// NewCelestialStemFromText 从天干中文还原成CelestialStem类型
+// 例: cs := NewCelestialStemFromText("甲")
 //	   assert(cs == CelestialStemEnum.Jia)
-func NewCelestialStemFromWord(word string) (CelestialStem, bool) {
+func NewCelestialStemFromText(word string) (CelestialStem, bool) {
 	cs, valid := celestialStemWordMap[word]
 	return cs, valid
 }
@@ -32,18 +32,18 @@ func NewCelestialStemFromWord(word string) (CelestialStem, bool) {
 // 		 ...
 //       x=癸, x.Next() -> 甲
 func (cs CelestialStem) Next() CelestialStem {
-	return cs.Add(1)
+	return cs.Move(1)
 }
 
 // Prev 获得该天干的上一项, Next的逆操作
 func (cs CelestialStem) Prev() CelestialStem {
-	return cs.Add(-1)
+	return cs.Move(-1)
 }
 
-// Add 获得该天干向前/后的任意项, Next和Prev的推广
-// n < 0 向前回朔, n > 0 向后推算
-func (cs CelestialStem) Add(n int) CelestialStem {
-	ncs := int(cs) + n
+// Move 获得该天干往前/后的第n项, Next和Prev的推广
+// n < 0 往前回朔, n > 0 往后推算
+func (cs CelestialStem) Move(nth int) CelestialStem {
+	ncs := int(cs) + nth
 	if ncs < 0 {
 		ncs = ncs%10 + 10
 	}

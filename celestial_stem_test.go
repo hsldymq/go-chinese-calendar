@@ -22,7 +22,7 @@ func TestNewCelestialStemFromWord(t *testing.T) {
 	}
 
 	for idx, each := range inputs {
-		c, v := NewCelestialStemFromWord(each)
+		c, v := NewCelestialStemFromText(each)
 		if c != expect[idx].CelestialStem || v != expect[idx].Valid {
 			t.Fatalf("new celestial stem from word %s, should return %d and %v, got %d and %v",
 				each,
@@ -36,7 +36,7 @@ func TestNewCelestialStemFromWord(t *testing.T) {
 }
 
 func TestCelestialStem(t *testing.T) {
-	t.Run("test Add method", func(t *testing.T) {
+	t.Run("test Move method", func(t *testing.T) {
 		actual := CelestialStemEnum.Jia
 		ns := []int{
 			1, 1, 1, 1, 1,
@@ -57,7 +57,7 @@ func TestCelestialStem(t *testing.T) {
 
 		for idx, n := range ns {
 			original := actual
-			actual = actual.Add(n)
+			actual = actual.Move(n)
 			if actual != expect[idx] {
 				t.Fatalf("add %d to %d should return %d, got %d",
 					n,
