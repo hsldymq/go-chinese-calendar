@@ -131,7 +131,7 @@ func TestNewTerrestrialBranchFromTime(t *testing.T) {
 }
 
 func TestTerrestrialBranch(t *testing.T) {
-	t.Run("test Add method", func(t *testing.T) {
+	t.Run("test Move method", func(t *testing.T) {
 		actual := TerrestrialBranchEnum.Zi
 		ns := []int{
 			1, 1, 1, 1, 1, 1,
@@ -152,7 +152,7 @@ func TestTerrestrialBranch(t *testing.T) {
 
 		for idx, n := range ns {
 			original := actual
-			actual = actual.Add(n)
+			actual = actual.Move(n)
 			if actual != expect[idx] {
 				t.Fatalf("add %d to %d should return %d, got %d",
 					n,

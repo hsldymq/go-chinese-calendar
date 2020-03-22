@@ -46,18 +46,18 @@ func NewTerrestrialBranchFromWord(word string) (TerrestrialBranch, bool) {
 // 		 ...
 //       x=亥, x.Next() -> 子
 func (tb TerrestrialBranch) Next() TerrestrialBranch {
-	return tb.Add(1)
+	return tb.Move(1)
 }
 
 // Prev 获得该地支的上一项, Next的逆操作
 func (tb TerrestrialBranch) Prev() TerrestrialBranch {
-	return tb.Add(-1)
+	return tb.Move(-1)
 }
 
-// Add 获得该地支之前/后的任意项, Next和Prev的推广
-// n < 0 向前回朔, n > 0 向后推算
-func (tb TerrestrialBranch) Add(n int) TerrestrialBranch {
-	ntb := int(tb) + n
+// Move 获得该地支往前/后的第n项, Next和Prev的推广
+// n < 0 往前回朔, n > 0 往后推算
+func (tb TerrestrialBranch) Move(nth int) TerrestrialBranch {
+	ntb := int(tb) + nth
 	if ntb < 0 {
 		ntb = ntb%12 + 12
 	}
