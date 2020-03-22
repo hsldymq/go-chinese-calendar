@@ -97,7 +97,7 @@ func (l EclipticLongitude) SolarTerm() SolarTerm {
 }
 
 // SolarTermEnum 24节气枚举
-// 英文命名参照: http://www.cma.gov.cn/2011xzt/essjqzt/jqhz/jqhz02/201312/t20131213_233952.html
+// 英文命名参照中国气象局: http://www.cma.gov.cn/2011xzt/essjqzt/jqhz/jqhz02/201312/t20131213_233952.html
 var SolarTermEnum = struct {
 	TheSpringEquinox      SolarTerm // 春分
 	PureBrightness        SolarTerm // 清明
