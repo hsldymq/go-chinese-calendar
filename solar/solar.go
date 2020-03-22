@@ -42,6 +42,36 @@ var solarTermsTraditional = [24]string{
 // SolarTerm 24节气
 type SolarTerm int
 
+// 返回往后(或往面)第n个节气
+// nth > 0往后推, nth < 0 往前推
+func (st SolarTerm) Move(byNth int) SolarTerm {
+	t := (st + SolarTerm(byNth)) % 24
+	if t < 0 {
+		t = SolarTerm(24)
+	}
+	return t
+}
+
+// IsMidTerm 该节气是否是中气
+func (st SolarTerm) IsMidTerm() bool {
+	l := map[SolarTerm]bool{
+		SolarTermEnum.TheWinterSolstice:     true,
+		SolarTermEnum.GreaterCold:           true,
+		SolarTermEnum.RainWater:             true,
+		SolarTermEnum.TheSpringEquinox:      true,
+		SolarTermEnum.GrainRain:             true,
+		SolarTermEnum.LesserFullnessOfGrain: true,
+		SolarTermEnum.TheSummerSolstice:     true,
+		SolarTermEnum.GreaterHeat:           true,
+		SolarTermEnum.TheEndOfHeat:          true,
+		SolarTermEnum.TheAutumnEquinox:      true,
+		SolarTermEnum.FrostsDescent:         true,
+		SolarTermEnum.LesserSnow:            true,
+	}
+
+	return l[st]
+}
+
 func (st SolarTerm) String(simplified bool) string {
 	if int(st) >= 24 || int(st) < 0 {
 		return ""
