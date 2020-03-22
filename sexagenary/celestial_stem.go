@@ -1,4 +1,4 @@
-package calendar
+package sexagenary
 
 // celestialStem 天干中文列表
 var celestialStemWords = [10]string{"甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"}
