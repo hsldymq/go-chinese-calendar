@@ -40,16 +40,16 @@ func NewSexagenaryTermFromIndex(idx int) SexagenaryTerm {
 	if idx < 0 {
 		idx = idx%60 + 60
 	}
-	return SexagenaryTermEnum.JiaZi.Add(idx)
+	return SexagenaryTermEnum.JiaZi.Move(idx)
 }
 
-// NewSexagenaryTermFromWord 通过干支中文返回该类型值
-func NewSexagenaryTermFromWord(word string) (SexagenaryTerm, bool) {
-	ct := strings.Split(word, "")
+// NewSexagenaryTermFromText 通过干支中文返回该类型值
+func NewSexagenaryTermFromText(txt string) (SexagenaryTerm, bool) {
+	ct := strings.Split(txt, "")
 	if len(ct) != 2 {
 		return SexagenaryTermEnum.JiaZi, false
 	}
-	c, cValid := NewCelestialStemFromWord(ct[0])
+	c, cValid := NewCelestialStemFromText(ct[0])
 	t, tValid := NewTerrestrialBranchFromWord(ct[1])
 	if !cValid || !tValid {
 		return SexagenaryTermEnum.JiaZi, false
@@ -80,12 +80,12 @@ func (s SexagenaryTerm) Prev() SexagenaryTerm {
 	}
 }
 
-// Add 获得该干支之前/后的任一项, Next和Prev的推广
-// n < 0 向前回朔, n > 0 向后推算
-func (s SexagenaryTerm) Add(n int) SexagenaryTerm {
+// Move 获得该干支往前/后的第n项, Next和Prev的推广
+// n < 0 往前回朔, n > 0 往后推算
+func (s SexagenaryTerm) Move(nth int) SexagenaryTerm {
 	return SexagenaryTerm{
-		CelestialStem:     s.CelestialStem.Add(n),
-		TerrestrialBranch: s.TerrestrialBranch.Add(n),
+		CelestialStem:     s.CelestialStem.Move(nth),
+		TerrestrialBranch: s.TerrestrialBranch.Move(nth),
 	}
 }
 

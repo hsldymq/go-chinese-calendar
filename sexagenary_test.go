@@ -24,11 +24,11 @@ func TestSexagenaryTerm(t *testing.T) {
 		}
 	})
 
-	t.Run("test Add method", func(t *testing.T) {
+	t.Run("test Move method", func(t *testing.T) {
 		actual := SexagenaryTermEnum.JiaZi
 		for idx := 1; idx <= 120; idx++ {
 			origin := actual
-			actual = actual.Add(1)
+			actual = actual.Move(1)
 			if actual.Index() != idx%60 {
 				t.Fatalf("add 1 to %d should be %d, got %d", origin.Index(), idx%60, actual.Index())
 			}
@@ -37,7 +37,7 @@ func TestSexagenaryTerm(t *testing.T) {
 		actual = SexagenaryTermEnum.JiaZi
 		for idx := 59; idx > 0; idx-- {
 			origin := actual
-			actual = actual.Add(-1)
+			actual = actual.Move(-1)
 			if actual.Index() != idx {
 				t.Fatalf("add -1 to %d should be %d, got %d", origin, idx, actual)
 			}
@@ -59,7 +59,7 @@ func TestSexagenaryTerm(t *testing.T) {
 			if expect[i] != actual.String() {
 				t.Fatalf("string of %d should be %s, got %s", actual, expect[i], actual.String())
 			}
-			actual = actual.Add(1)
+			actual = actual.Move(1)
 		}
 	})
 }
