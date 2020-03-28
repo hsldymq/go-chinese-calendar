@@ -53,10 +53,14 @@ func (cs CelestialStem) Move(nth int) CelestialStem {
 
 // String 返回天干中文
 func (cs CelestialStem) String() string {
-	if cs >= 10 || cs < 0 {
+	if !cs.IsValid() {
 		return ""
 	}
 	return celestialStemWords[cs]
+}
+
+func (cs CelestialStem) IsValid() bool {
+	return cs >= 0 && cs < 10
 }
 
 // CelestialStemEnum 天干枚举项
