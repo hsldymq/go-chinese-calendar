@@ -67,7 +67,7 @@ func (tb TerrestrialBranch) Move(nth int) TerrestrialBranch {
 
 // Month 返回对应的地支纪月
 func (tb TerrestrialBranch) Month() int {
-	if tb > 11 || tb < 0 {
+	if !tb.IsValid() {
 		return 0
 	}
 	if tb == TerrestrialBranchEnum.Zi {
@@ -80,10 +80,14 @@ func (tb TerrestrialBranch) Month() int {
 
 // String 返回地支中文
 func (tb TerrestrialBranch) String() string {
-	if tb >= 12 || tb < 0 {
+	if !tb.IsValid() {
 		return ""
 	}
 	return terrestrialBranchWords[tb]
+}
+
+func (tb TerrestrialBranch) IsValid() bool {
+	return tb >= 0 && tb < 12
 }
 
 // ZodiacSign 返回对应的生肖
@@ -135,7 +139,7 @@ func (zs ZodiacSign) TerrestrialBranch() TerrestrialBranch {
 }
 
 func (zs ZodiacSign) String(simplified bool) string {
-	if zs >= 12 || zs < 0 {
+	if !zs.IsValid() {
 		return ""
 	}
 
@@ -143,6 +147,10 @@ func (zs ZodiacSign) String(simplified bool) string {
 		return zodiacSignWords[zs]
 	}
 	return zodiacSignWordsTraditional[zs]
+}
+
+func (zs ZodiacSign) IsValid() bool {
+	return zs >= 0 || zs < 12
 }
 
 // ZodiacSignEnum 生肖枚举项
