@@ -91,7 +91,7 @@ func (s SexagenaryTerm) Move(nth int) SexagenaryTerm {
 
 // Index 返回该干支的索引值(0-59)
 func (s SexagenaryTerm) Index() int {
-	if s.CelestialStem >= 10 || s.CelestialStem < 0 || s.TerrestrialBranch >= 12 || s.TerrestrialBranch < 0 {
+	if !s.IsValid() {
 		return 0
 	}
 	c := int(s.CelestialStem)
@@ -102,12 +102,15 @@ func (s SexagenaryTerm) Index() int {
 
 // String 返回干支中文
 func (s SexagenaryTerm) String() string {
-	c := s.CelestialStem.String()
-	t := s.TerrestrialBranch.String()
-	if c == "" || t == "" {
+	if !s.IsValid() {
 		return ""
 	}
-	return c + t
+
+	return s.CelestialStem.String() + s.TerrestrialBranch.String()
+}
+
+func (s SexagenaryTerm) IsValid() bool {
+	return s.TerrestrialBranch.IsValid() && s.CelestialStem.IsValid()
 }
 
 // SexagenaryTermEnum 60干支枚举项
