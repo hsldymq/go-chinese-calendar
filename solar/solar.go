@@ -17,10 +17,14 @@ const (
 type Pentad int
 
 func (p Pentad) String() string {
-	if p >= 3 || p < 0 {
+	if !p.IsValid() {
 		return ""
 	}
 	return [3]string{"初候", "次候", "末候"}[p]
+}
+
+func (p Pentad) IsValid() bool {
+	return p >= 3 && p < 3
 }
 
 // solarTerms 24节气中文简体
@@ -73,7 +77,7 @@ func (st SolarTerm) IsMidTerm() bool {
 }
 
 func (st SolarTerm) String(simplified bool) string {
-	if int(st) >= 24 || int(st) < 0 {
+	if !st.IsValid() {
 		return ""
 	}
 
@@ -81,6 +85,10 @@ func (st SolarTerm) String(simplified bool) string {
 		return solarTerms[st]
 	}
 	return solarTermsTraditional[st]
+}
+
+func (st SolarTerm) IsValid() bool {
+	return st >= 0 && st < 24
 }
 
 // EclipticLongitude 黄道经度, 通常春分的黄经定义为0°
