@@ -6,32 +6,20 @@ import (
 	"github.com/hsldymq/go-chinese-calendar/sexagenary"
 )
 
-type SexagenaryTime time.Time
+type SexagenaryTime struct {
+	Year  sexagenary.SexagenaryTerm
+	Month sexagenary.SexagenaryTerm
+	Day   sexagenary.SexagenaryTerm
+	Hour  sexagenary.SexagenaryTerm
+}
 
 func NewSexagenaryTime(t time.Time, Timezone ...*time.Location) SexagenaryTime {
 	tz := baseTimezone
 	if len(Timezone) > 0 {
 		tz = Timezone[0]
 	}
-	return SexagenaryTime(t.In(tz))
-}
+	t.In(tz)
+	st := SexagenaryTime{}
 
-func (t SexagenaryTime) Year() sexagenary.SexagenaryTerm {
-	// TODO
-	return sexagenary.SexagenaryTermEnum.JiaZi
-}
-
-func (t SexagenaryTime) Month() sexagenary.SexagenaryTerm {
-	// TODO
-	return sexagenary.SexagenaryTermEnum.JiaZi
-}
-
-func (t SexagenaryTime) Day() sexagenary.SexagenaryTerm {
-	// TODO
-	return sexagenary.SexagenaryTermEnum.JiaZi
-}
-
-func (t SexagenaryTime) Hour() sexagenary.SexagenaryTerm {
-	// TODO
-	return sexagenary.SexagenaryTermEnum.JiaZi
+	return st
 }
